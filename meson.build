@@ -11,7 +11,7 @@ project(
     default_options: {
         'warning_level': '3',
         'buildtype': 'debug',
-        'default_library': 'static',
+        'default_library': 'both',  # Allow both static and shared
     },
 )
 
@@ -127,6 +127,32 @@ if platform == 'windows'
 endif
 
 add_project_arguments('-DMUON_BOOTSTRAPPED', language: 'c')
+
+# Library setup
+inc = include_directories('include')
+
+# Create both shared and static libraries
+libmuon = library(
+    'muon',
+    src,
+    dependencies: [
+        curl_dep,
+        libarchive_dep,
+        pkgconf_dep,
+        samurai_dep,
+        tinyjson_dep,
+    ],
+    include_directories: inc,
+    install: true,
+    version: meson.project_version(),
+    soversion: '0',
+)
+
+# Create a dependency that can be used by the executable and external projects
+libmuon_dep = declare_dependency(
+    link_with: libmuon,
+    include_directories: inc,
+)
 
 include_dir = [include_directories('include')]
 

@@ -92,23 +92,5 @@ src = files(
     'wrap.c',
 )
 
-deps = []
-
-subdir('platform')
-src += platform_sources
-
-# version information
-src += configure_file(
-    configuration: version_info,
-    input: 'version.c.in',
-    output: 'version.c',
-)
-
-# embedded scripts
-subdir('script')
-src += script_sources
-
-# dependencies
-subdir('external')
-src += dep_sources
-deps += external_deps
+# We don't build the executable here anymore, it's moved to bin/meson.build
+# Sources are used by the main meson.build to create the library
